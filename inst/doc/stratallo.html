@@ -367,7 +367,7 @@ the population total of a given study variable, under constraint on
 total sample size. This problem can be further complemented by adding
 lower or upper bounds constraints on sample sizes is strata.</p>
 <p>A minor modification of the classical optimium sample allocation
-problem leads to the minimum sample size allocation. This problems lies
+problem leads to the minimum sample size allocation. This problem lies
 in the determination of a vector of strata sample sizes that minimizes
 total sample size, under assumed fixed level of the <span class="math inline">\(\pi\)</span>-estimator’s variance. As in the case
 of the classical optimal allocation, the problem of minimum sample size
@@ -404,12 +404,12 @@ populations with 507 and 969 strata. These are stored in
 <code>pop507</code> and <code>pop969</code> objects respectively.</p>
 <div id="minimization-of-the-variance-with-dopt-function" class="section level2">
 <h2>Minimization of the variance with <code>dopt</code> function</h2>
-<p>The <code>dopt</code> function solves the following two types of the
-allocation problem, formulated in the language of mathematical
+<p>The <code>dopt</code> function solves the following three types of
+the allocation problem, formulated in the language of mathematical
 optimization.</p>
 <p><strong>Problem 1 (one-sided upper bounds constraints)</strong><br />
 Given numbers <span class="math inline">\(a_w &gt; 0,\, M_w &gt; 0,\, w
-\in \mathcal W\)</span> and <span class="math inline">\(b,\, n &lt;
+\in \mathcal W\)</span> and <span class="math inline">\(b,\, n \le
 \sum_{w \in \mathcal W}\, M_w\)</span>, <span class="math display">\[\begin{align*}
     \underset{\mathbf x\in (0, +\infty)^{H}}{\mathrm{minimize ~\,}}
 &amp; \quad f(\mathbf x) = \sum_{w \in \mathcal W} \tfrac{a_w^2}{x_w} -
@@ -420,39 +420,57 @@ b \\
 (x_w)_{w \in \mathcal W}\)</span> is the optimization variable.</p>
 <p><strong>Problem 2 (one-sided lower bounds constraints)</strong><br />
 Given numbers <span class="math inline">\(a_w &gt; 0,\, m_w &gt; 0,\, w
-\in \mathcal W\)</span>, and <span class="math inline">\(b,\, n &gt;
+\in \mathcal W\)</span>, and <span class="math inline">\(b,\, n \ge
 \sum_{w \in \mathcal W} m_w\)</span>, <span class="math display">\[\begin{align*}
     \underset{\mathbf x\in (0, +\infty)^{H}}{\mathrm{minimize ~\,}}
 &amp; \quad f(\mathbf x) = \sum_{w \in \mathcal W} \tfrac{a_w^2}{x_w} -
 b \\
     \mathrm{subject ~ to} &amp; \quad \sum_{w \in \mathcal W} x_w = n \\
-    &amp; \quad x_w \geq m_w, \quad \forall w \in \mathcal W,
+    &amp; \quad x_w \ge m_w, \quad \forall w \in \mathcal W,
+\end{align*}\]</span> where <span class="math inline">\(\mathbf x=
+(x_w)_{w \in \mathcal W}\)</span> is the optimization variable.</p>
+<p><strong>Problem 3 (box-constraints)</strong><br />
+Given numbers <span class="math inline">\(a_w &gt; 0,\, 0 &lt; m_w &lt;
+M_w,\, w \in \mathcal W\)</span>, and <span class="math inline">\(b,\,
+\sum_{w \in \mathcal W} m_w \le n \le \sum_{w \in \mathcal W}
+M_w\)</span>, <span class="math display">\[\begin{align*}
+    \underset{\mathbf x\in (0, +\infty)^{H}}{\mathrm{minimize ~\,}}
+&amp; \quad f(\mathbf x) = \sum_{w \in \mathcal W} \tfrac{a_w^2}{x_w} -
+b \\
+    \mathrm{subject ~ to} &amp; \quad \sum_{w \in \mathcal W} x_w = n \\
+    &amp; \quad x_w \ge m_w, \quad \forall w \in \mathcal W, \\
+    &amp; \quad x_w \le M_w, \quad \forall w \in \mathcal W,
 \end{align*}\]</span> where <span class="math inline">\(\mathbf x=
 (x_w)_{w \in \mathcal W}\)</span> is the optimization variable.</p>
 <p>User of <code>dopt</code> can choose whether the solution computed
-will be for <strong>Problem 1</strong> or <strong>Problem 2</strong>
-This is achieved with the proper use of <code>m</code> and
-<code>M</code> arguments of the function. In case of <strong>Problem
-1</strong>, user provides the values of upper bounds with <code>M</code>
-argument, while leaving <code>m</code> as <code>NULL</code>. Similarly,
-for <strong>Problem 2</strong>, user provides the values of lower bounds
-with <code>m</code> argument, while leaving <code>M</code> as
-<code>NULL</code>. If both <code>m</code> and <code>M</code> are
-specified as <code>NULL</code> (default), the <code>dopt</code> returns
-the value of Tschuprov-Neyman allocation that minimizes variance <span class="math inline">\(D^2_{st}\)</span> under constraints on total
+will be for <strong>Problem 1</strong>, <strong>Problem 2</strong> or
+<strong>Problem 3</strong>. This is achieved with the proper use of
+<code>m</code> and <code>M</code> arguments of the function. In case of
+<strong>Problem 1</strong>, user provides the values of upper bounds
+with <code>M</code> argument, while leaving <code>m</code> as
+<code>NULL</code>. Similarly, for <strong>Problem 2</strong>, user
+provides the values of lower bounds with <code>m</code> argument, while
+leaving <code>M</code> as <code>NULL</code>. In case of <strong>Problem
+3</strong>, both arguments <code>m</code> and <code>M</code> must be
+specified. If both <code>m</code> and <code>M</code> are
+<code>NULL</code> (default), the <code>dopt</code> returns the value of
+Tschuprov-Neyman allocation that minimizes variance <span class="math inline">\(D^2_{st}\)</span> under constraints on total
 sample size <span class="math inline">\(\sum_{w \in \mathcal W} x_w =
 n\)</span>, and it is given by <span class="math display">\[
   x_w = a_w \frac{n}{\sum_{w \in \mathcal W} a_w}, \quad w \in \mathcal
 W
 \]</span> There are four different algorithms available to use for
-<strong>Problem 1</strong>, <em>rNa</em> (default), <em>sga</em>,
+<strong>Problem 1</strong>, <em>rna</em> (default), <em>sga</em>,
 <em>sgaplus</em>, <em>coma</em>. All these algorithms, except
 <em>sgaplus</em>, are described in detail in <span class="citation">Wesołowski et al. (2021)</span>. The <em>sgaplus</em>
 is defined in <span class="citation">Wójciak (2019)</span> as
 <em>Sequential Allocation (version 1)</em> algorithm.</p>
 <p>The optimization <strong>Problem 2</strong> is solved by the
-<em>LrNa</em> that in principle is based on the <em>rNa</em> and it is
+<em>lrna</em> that in principle is based on the <em>rna</em> and it is
 introduced in <span class="citation">Wójciak (2022)</span>.</p>
+<p>The optimization <strong>Problem 3</strong> is solved by the
+<em>rnabox</em> which is a new algorithm proposed by the authors of this
+package and it will be published soon.</p>
 </div>
 <div id="minimization-of-the-total-sample-size-nopt-function" class="section level2">
 <h2>Minimization of the total sample size <code>nopt</code>
@@ -460,7 +478,7 @@ function</h2>
 <p>The <code>nopt</code> function solves the following minimum sample
 size allocation problem, formulated in the language of mathematical
 optimization.</p>
-<p><strong>Problem 3</strong><br />
+<p><strong>Problem 4</strong><br />
 Given numbers <span class="math inline">\(a_w &gt; 0,\, M_w &gt; 0,\, w
 \in \mathcal W\)</span>, and <span class="math inline">\(b,\, D &gt;
 \sum_{w \in \mathcal W} \tfrac{a_w^2}{M_w} - b &gt; 0\)</span>, <span class="math display">\[\begin{align*}
@@ -471,8 +489,8 @@ Given numbers <span class="math inline">\(a_w &gt; 0,\, M_w &gt; 0,\, w
     &amp; \quad x_w \le M_w, \quad \forall w \in \mathcal W,
 \end{align*}\]</span> where <span class="math inline">\(\mathbf x=
 (x_w)_{w \in \mathcal W}\)</span> is the optimization variable.</p>
-<p>The algorithm that solves <strong>Problem 3</strong> is based on the
-<em>LrNa</em> and it is described in <span class="citation">Wójciak
+<p>The algorithm that solves <strong>Problem 4</strong> is based on the
+<em>lrna</em> and it is described in <span class="citation">Wójciak
 (2022)</span>.</p>
 </div>
 <div id="installation" class="section level2">
@@ -489,66 +507,93 @@ for an example population with 4 strata.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stratallo)</span></code></pre></div>
 <div id="function-dopt" class="section level3">
 <h3>Function <code>dopt</code></h3>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define example population</span></span>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define example population.</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3000</span>, <span class="dv">4000</span>, <span class="dv">5000</span>, <span class="dv">2000</span>) <span class="co"># Strata sizes.</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>S <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">48</span>, <span class="dv">79</span>, <span class="dv">76</span>, <span class="dv">17</span>) <span class="co"># Standard deviations of a study variable in strata.</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> N <span class="sc">*</span> S</span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>M <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">90</span>, <span class="dv">70</span>, <span class="dv">80</span>) <span class="co"># Upper bounds constraints imposed on the sample sizes in strata.</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(M <span class="sc">&lt;=</span> N)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">190</span> <span class="co"># Total sample size.</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>n <span class="sc">&lt;</span> <span class="fu">sum</span>(M)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Solution to Problem 1.</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>opt <span class="ot">&lt;-</span> <span class="fu">dopt</span>(<span class="at">n =</span> n, <span class="at">a =</span> a, <span class="at">M =</span> M)</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>opt</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 34.979757 76.761134 70.000000  8.259109</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(opt) <span class="co"># Equals to n.</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 190</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(opt <span class="sc">&lt;=</span> M) <span class="co"># Does not violate upper bounds constraints.</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Variance of the pi-estimator that corresponds to a given optimal allocation.</span></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="fu">var_tst_si</span>(opt, N, S)</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 4035156476</span></span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">120</span>, <span class="dv">1</span>, <span class="dv">1</span>) <span class="co"># Lower bounds constraints imposed on the sample sizes in strata.</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>n <span class="sc">&gt;</span> <span class="fu">sum</span>(m)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Solution to Problem 2.</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>opt <span class="ot">&lt;-</span> <span class="fu">dopt</span>(<span class="at">n =</span> n, <span class="at">a =</span> a, <span class="at">m =</span> m)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>opt</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1]  50.000000 120.000000  18.357488   1.642512</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(opt) <span class="co"># Equals to n.</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 190</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(opt <span class="sc">&gt;=</span> m) <span class="co"># Does not violate lower bounds constraints.</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Variance of the pi-estimator that corresponds to a given optimal allocation.</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="fu">var_tst_si</span>(opt, N, S)</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 9755319333</span></span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Tschuprov-Neyman allocation (no inequality constraints).</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>opt <span class="ot">&lt;-</span> <span class="fu">dopt</span>(<span class="at">n =</span> n, <span class="at">a =</span> a)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>opt</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 31.304348 68.695652 82.608696  7.391304</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(opt) <span class="co"># Equals to n.</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 190</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Variance of the pi-estimator that corresponds to a given optimal allocation.</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="fu">var_tst_si</span>(opt, N, S)</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 3959066000</span></span></code></pre></div>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> N <span class="sc">*</span> S</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">190</span> <span class="co"># Total sample size.</span></span></code></pre></div>
+<div id="tschuprov-neyman-allocation-no-inequality-constraints" class="section level4">
+<h4>Tschuprov-Neyman allocation (no inequality constraints)</h4>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>opt <span class="ot">&lt;-</span> <span class="fu">dopt</span>(<span class="at">n =</span> n, <span class="at">a =</span> a)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>opt</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 31.304348 68.695652 82.608696  7.391304</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(opt) <span class="sc">==</span> n</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Variance of the pi-estimator that corresponds to a given optimal allocation.</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">var_tst_si</span>(opt, N, S)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 3959066000</span></span></code></pre></div>
+</div>
+<div id="problem-1-one-sided-upper-bounds-constraints" class="section level4">
+<h4>Problem 1 (one-sided upper bounds constraints)</h4>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>M <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">90</span>, <span class="dv">70</span>, <span class="dv">80</span>) <span class="co"># Upper bounds constraints imposed on the sample sizes in strata.</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(M <span class="sc">&lt;=</span> N)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>n <span class="sc">&lt;</span> <span class="fu">sum</span>(M)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Solution to Problem 1.</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>opt <span class="ot">&lt;-</span> <span class="fu">dopt</span>(<span class="at">n =</span> n, <span class="at">a =</span> a, <span class="at">M =</span> M)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>opt</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 34.979757 76.761134 70.000000  8.259109</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(opt) <span class="sc">==</span> n</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(opt <span class="sc">&lt;=</span> M) <span class="co"># Does not violate upper bounds constraints.</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Variance of the pi-estimator that corresponds to a given optimal allocation.</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="fu">var_tst_si</span>(opt, N, S)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 4035156476</span></span></code></pre></div>
+</div>
+<div id="problem-2-one-sided-lower-bounds-constraints" class="section level4">
+<h4>Problem 2 (one-sided lower bounds constraints)</h4>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">120</span>, <span class="dv">1</span>, <span class="dv">1</span>) <span class="co"># Lower bounds constraints imposed on the sample sizes in strata.</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>n <span class="sc">&gt;</span> <span class="fu">sum</span>(m)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Solution to Problem 2.</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>opt <span class="ot">&lt;-</span> <span class="fu">dopt</span>(<span class="at">n =</span> n, <span class="at">a =</span> a, <span class="at">m =</span> m)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>opt</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1]  50.000000 120.000000  18.357488   1.642512</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(opt) <span class="sc">==</span> n</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(opt <span class="sc">&gt;=</span> m) <span class="co"># Does not violate lower bounds constraints.</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Variance of the pi-estimator that corresponds to a given optimal allocation.</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="fu">var_tst_si</span>(opt, N, S)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 9755319333</span></span></code></pre></div>
+</div>
+<div id="problem-3-box-constraints" class="section level4">
+<h4>Problem 3 (box-constraints)</h4>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">90</span>, <span class="dv">500</span>, <span class="dv">50</span>) <span class="co"># Lower bounds constraints imposed on sample sizes in strata.</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>M <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">300</span>, <span class="dv">400</span>, <span class="dv">800</span>, <span class="dv">90</span>) <span class="co"># Upper bounds constraints imposed on sample sizes in strata.</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">1284</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>n <span class="sc">&gt;</span> <span class="fu">sum</span>(m) <span class="sc">&amp;&amp;</span> n <span class="sc">&lt;</span> <span class="fu">sum</span>(M)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Optimal allocation under box-constraints.</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>opt <span class="ot">&lt;-</span> <span class="fu">dopt</span>(<span class="at">n =</span> n, <span class="at">a =</span> a, <span class="at">m =</span> m, <span class="at">M =</span> M)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>opt</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 228.1290 400.0000 602.0072  53.8638</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(opt) <span class="sc">==</span> n</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(opt <span class="sc">&gt;=</span> m <span class="sc">&amp;</span> opt <span class="sc">&lt;=</span> M) <span class="co"># Does not violate any lower or upper bounds constraints.</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Variance of the pi-estimator that corresponds to a given optimal allocation.</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="fu">var_tst_si</span>(opt, N, S)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 540527719</span></span></code></pre></div>
+</div>
 </div>
 <div id="function-nopt" class="section level3">
 <h3>Function <code>nopt</code></h3>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3000</span>, <span class="dv">4000</span>, <span class="dv">5000</span>, <span class="dv">2000</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="dv">70000</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>M <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">90</span>, <span class="dv">70</span>, <span class="dv">80</span>)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>D <span class="ot">&lt;-</span> <span class="fl">1e6</span> <span class="co"># Variance constraint.</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>opt <span class="ot">&lt;-</span> <span class="fu">nopt</span>(D, a, b, M)</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(opt)</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 183.1776</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3000</span>, <span class="dv">4000</span>, <span class="dv">5000</span>, <span class="dv">2000</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="dv">70000</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>M <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">90</span>, <span class="dv">70</span>, <span class="dv">80</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>D <span class="ot">&lt;-</span> <span class="fl">1e6</span> <span class="co"># Variance constraint.</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>opt <span class="ot">&lt;-</span> <span class="fu">nopt</span>(D, a, b, M)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(opt)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 183.1776</span></span></code></pre></div>
 </div>
 </div>
 <div id="references" class="section level2 unnumbered">

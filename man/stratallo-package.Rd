@@ -4,9 +4,9 @@
 \name{stratallo-package}
 \alias{stratallo-package}
 \alias{stratallo}
-\title{Functions for Optimal Sample Allocation in Stratified Sampling}
+\title{Functions for Optimum Sample Allocation in Stratified Sampling}
 \description{
-Optimal Sample Allocation in Stratified Sampling
+Optimum Sample Allocation in Stratified Sampling
 }
 \references{
 Stenger, H., Gabler, S. (2005).
@@ -34,10 +34,10 @@ Numerical Performance of the RNABOX Algorithm (Version 1.0.1).
 
 Wójciak, W. (2023).
 Another Solution of Some Optimum Allocation Problem.
-\emph{Statistics in Transition new series} (in press).
+\emph{Statistics in Transition new series}, 24(5) (in press).
 \url{https://arxiv.org/abs/2204.04035} \cr
 
-Wójciak, W. (2019). Optimal allocation in stratified sampling schemes.
+Wójciak, W. (2019). Optimal Allocation in Stratified Sampling Schemes.
 \emph{MSc Thesis}, Warsaw University of Technology, Warsaw, Poland.
 \url{http://home.elka.pw.edu.pl/~wwojciak/msc_optimal_allocation.pdf}
 }

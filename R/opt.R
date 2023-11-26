@@ -16,8 +16,9 @@
 #' subject to
 #' \deqn{\sum_{h=1}^H x_h = n}
 #' \deqn{m_h \leq x_h \leq M_h, \quad h = 1,\ldots,H,}
-#' where \eqn{n > 0,\, A_h > 0,\, m_h > 0,\, M_h > 0,\, h = 1, \ldots ,H}, such
-#' that \eqn{\sum_{h=1}^H m_h \leq n \leq \sum_{h=1}^H M_h} are given numbers.
+#' where \eqn{n > 0,\, A_h > 0,\, m_h > 0,\, M_h > 0}, such that
+#' \eqn{m_h < M_h,\, h = 1,\ldots,H}, and
+#' \eqn{\sum_{h=1}^H m_h \leq n \leq \sum_{h=1}^H M_h}, are given numbers.
 #' The minimization is on \eqn{\mathbb R_+^H}.
 #'
 #' The inequality constraints are optional and user can choose whether and how
@@ -44,9 +45,9 @@
 #'   * one-sided lower-bounds \eqn{m_h,\, h = 1,\ldots,H}:
 #'      * `LRNA` - [rna()]
 #'  * one-sided upper-bounds \eqn{M_h,\, h = 1,\ldots,H}:
-#'      * `RNA` - [rna()],
-#'      * `SGA` - [sga()],
-#'      * `SGAPLUS` - [sgaplus()],
+#'      * `RNA` - [rna()]
+#'      * `SGA` - [sga()]
+#'      * `SGAPLUS` - [sgaplus()]
 #'      * `COMA` - [coma()]
 #'  * box constraints \eqn{m_h, M_h,\, h = 1,\ldots,H}:
 #'      * `RNABOX` - [rnabox()]
@@ -54,14 +55,22 @@
 #' @note If no inequality constraints are added, the allocation is given by the
 #'   Neyman allocation as:
 #'   \deqn{x_h = A_h \frac{n}{\sum_{i=1}^H A_i}, \quad h = 1,\ldots,H.}
-#'   For \emph{stratified \eqn{\pi} estimator} of the population total and for
-#'   \emph{stratified simple random sampling without replacement} design, the
-#'   parameters of the objective function \eqn{f} are
+#'   For \emph{stratified \eqn{\pi} estimator} of the population total with
+#'   \emph{stratified simple random sampling without replacement} design in use,
+#'   the parameters of the objective function \eqn{f} are:
 #'   \deqn{A_h = N_h S_h, \quad h = 1,\ldots,H,}
 #'   where \eqn{N_h} is the size of stratum \eqn{h} and \eqn{S_h} denotes
 #'   standard deviation of a given study variable in stratum \eqn{h}.
 #'
 #' @inheritParams rnabox
+#' @param m (`numeric` or `NULL`)\cr lower bounds \eqn{m_1,\ldots,m_H},
+#'   optionally imposed on sample sizes in strata. If no lower bounds should be
+#'   imposed, then `m` must be set to `NULL`. If `M` is not `NULL`, it is then
+#'   required that `m < M`.
+#' @param M (`numeric` or `NULL`)\cr upper bounds \eqn{M_1,\ldots,M_H},
+#'   optionally imposed on sample sizes in strata. If no upper bounds should be
+#'   imposed, then `M` must be set to `NULL`. If `m` is not `NULL`, it is then
+#'   required that `m < M`.
 #' @param M_algorithm (`string`)\cr the name of the underlying algorithm to be
 #'   used for computing sample allocation under one-sided upper-bounds
 #'   constraints.
@@ -74,25 +83,19 @@
 #' @seealso [optcost()], [rna()], [sga()], [sgaplus()], [coma()], [rnabox()].
 #
 #' @references
-#'   Wesołowski, J., Wieczorkowski, R., Wójciak, W. (2021).
-#'   Optimality of the Recursive Neyman Allocation.
-#'   *Journal of Survey Statistics and Methodology*, 10(5), pp. 1263–1275.
-#'   \doi{10.1093/jssam/smab018},
-#'   \doi{10.48550/arXiv.2105.14486} \cr
-#'
 #'   Särndal, C.-E., Swensson, B. and Wretman, J. (1992).
 #'   *Model Assisted Survey Sampling*, Springer, New York.
 #'
 #' @export
 #' @example examples/opt.R
 #'
-opt <- function(n, a, m = NULL, M = NULL, M_algorithm = "rna") {
-  H <- length(a)
+opt <- function(n, A, m = NULL, M = NULL, M_algorithm = "rna") {
+  H <- length(A)
   assert_number(n, finite = TRUE)
-  assert_numeric(a, finite = TRUE, any.missing = FALSE, min.len = 1L)
+  assert_numeric(A, finite = TRUE, any.missing = FALSE, min.len = 1L)
   assert_numeric(m, finite = TRUE, any.missing = FALSE, len = H, null.ok = TRUE)
   assert_numeric(M, any.missing = FALSE, len = H, null.ok = TRUE)
-  assert_true(all(a > 0))
+  assert_true(all(A > 0))
   assert_true(all(m > 0))
   assert_true(all(M > 0))
   assert_true(all(m < M))
@@ -118,17 +121,17 @@ opt <- function(n, a, m = NULL, M = NULL, M_algorithm = "rna") {
   } else if (n == sum(M)) {
     M
   } else if (lwr_imposed && upr_imposed) {
-    rnabox(n = n, a = a, m = m, M = M)
+    rnabox(n = n, A = A, bounds1 = M, bounds2 = m)
   } else if (lwr_imposed) {
-    rna(total_cost = n, a = a, bounds = m, check_violations = .Primitive("<="))
+    rna(total_cost = n, A = A, bounds = m, check_violations = .Primitive("<="))
   } else if (upr_imposed) {
     if (M_algorithm == "rna") {
-      rna(total_cost = n, a = a, bounds = M)
+      rna(total_cost = n, A = A, bounds = M)
     } else {
-      do.call(M_algorithm, args = list(total_cost = n, a = a, M = M))
+      do.call(M_algorithm, args = list(total_cost = n, A = A, M = M))
     }
   } else {
-    (n / sum(a)) * a # Neyman allocation.
+    (n / sum(A)) * A # Neyman allocation.
   }
 }
 
@@ -158,7 +161,7 @@ opt <- function(n, a, m = NULL, M = NULL, M_algorithm = "rna") {
 #'   described in Wójciak (2023). The allocation computed is valid for all
 #'   stratified sampling schemes for which the variance of the stratified
 #'   estimator is of the form:
-#'   \deqn{V(x_1,\ldots,x_H) = \sum_{h=1}^H \frac{A^2_h}{x_h} - A_0,}
+#'   \deqn{\sum_{h=1}^H \frac{A^2_h}{x_h} - A_0,}
 #'   where \eqn{H} denotes total number of strata, \eqn{x_1,\ldots,x_H} are
 #'   strata sample sizes and \eqn{A_0,\, A_h > 0,\, h = 1,\ldots,H}, do not
 #'   depend on \eqn{x_h,\, h = 1,\ldots,H}.
@@ -167,6 +170,7 @@ opt <- function(n, a, m = NULL, M = NULL, M_algorithm = "rna") {
 #'   for \emph{stratified simple random sampling without replacement} design,
 #'   the population parameters are as follows:
 #'   \deqn{A_h = N_h S_h, \quad h = 1,\ldots,H,}
+#'   \deqn{A_0 = \sum_{h=1}^H N_h S_h^2,}
 #'   where \eqn{N_h} is the size of stratum \eqn{h} and \eqn{S_h} denotes
 #'   standard deviation of a given study variable in stratum \eqn{h}.
 #'
@@ -174,8 +178,11 @@ opt <- function(n, a, m = NULL, M = NULL, M_algorithm = "rna") {
 #' @inheritParams rna
 #' @param V (`number`)\cr parameter \eqn{V} of the equality constraint. A
 #'   strictly positive scalar. If `M` is not `NULL`, it is then required that
-#'   `V >= sum(a^2/M) - a0`.
-#' @param a0 (`number`)\cr population constant \eqn{A_0}.
+#'   `V >= sum(A^2/M) - A0`.
+#' @param A0 (`number`)\cr population constant \eqn{A_0}.
+#' @param M (`numeric` or `NULL`)\cr upper bounds \eqn{M_1,\ldots,M_H},
+#'   optionally imposed on sample sizes in strata. If no upper bounds should be
+#'   imposed, then `M` must be set to `NULL`.
 #'
 #' @return Numeric vector with optimal sample allocations in strata.
 #'
@@ -184,50 +191,51 @@ opt <- function(n, a, m = NULL, M = NULL, M_algorithm = "rna") {
 #' @references
 #'   Wójciak, W. (2023).
 #'   Another Solution of Some Optimum Allocation Problem.
-#'   *Statistics in Transition new series* (in press).
+#'   *Statistics in Transition new series*, 24(5) (in press).
 #'   <https://arxiv.org/abs/2204.04035>
 #'
 #' @export
 #' @examples
-#' a <- c(3000, 4000, 5000, 2000)
+#' A <- c(3000, 4000, 5000, 2000)
 #' M <- c(100, 90, 70, 80)
-#' optcost(1017579, a = a, a0 = 579, M = M)
-optcost <- function(V, a, a0, M = NULL, unit_costs = 1) {
-  H <- length(a)
+#' xopt <- optcost(1017579, A = A, A0 = 579, M = M)
+#' xopt
+optcost <- function(V, A, A0, M = NULL, unit_costs = 1) {
+  H <- length(A)
   assert_number(V, finite = TRUE)
-  assert_numeric(a, finite = TRUE, any.missing = FALSE, min.len = 1L)
-  assert_number(a0, finite = TRUE)
+  assert_numeric(A, finite = TRUE, any.missing = FALSE, min.len = 1L)
+  assert_number(A0, finite = TRUE)
   assert_numeric(M, any.missing = FALSE, len = H, null.ok = TRUE)
   assert_numeric(unit_costs, any.missing = FALSE, null.ok = TRUE)
-  assert_true(length(unit_costs) == 1L || length(unit_costs) == length(a))
-  assert_true(all(a > 0))
+  assert_true(length(unit_costs) == 1L || length(unit_costs) == length(A))
+  assert_true(all(A > 0))
   assert_true(all(M > 0))
   assert_true(all(unit_costs > 0))
 
+  A2 <- A^2
   upr_imposed <- !is.null(M)
   if (upr_imposed) {
-    assert_true(sum(a^2 / M) - a0 > 0)
-    assert_true(V >= sum(a^2 / M) - a0)
+    assert_true(sum(A2 / M) - A0 > 0)
+    assert_true(V >= sum(A2 / M) - A0)
   } else {
     assert_true(V > 0)
   }
 
-  a2 <- a^2
   if (H == 1L) {
-    a2 / (V + a0)
+    A2 / (V + A0)
   } else if (!upr_imposed) {
     c_sqrt <- sqrt(unit_costs)
-    (a / c_sqrt) * sum(a * c_sqrt) / (V + a0)
-  } else if (V == sum(a2 / M) - a0) {
+    (A / c_sqrt) * sum(A * c_sqrt) / (V + A0)
+  } else if (V == sum(A2 / M) - A0) {
     M
   } else {
     y <- rna(
-      total_cost = V + a0,
-      a = a,
-      bounds = a2 / (unit_costs * M),
+      total_cost = V + A0,
+      A = A,
+      bounds = A2 / (unit_costs * M),
       unit_costs = unit_costs,
       check_violations = .Primitive("<=")
     )
-    a2 / (unit_costs * y)
+    A2 / (unit_costs * y)
   }
 }

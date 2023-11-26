@@ -1,9 +1,9 @@
-#' Optimal Sample Allocation in Stratified Sampling
+#' Optimum Sample Allocation in Stratified Sampling
 #'
 #' @name stratallo-package
 #' @aliases stratallo
 #' @docType package
-#' @title Functions for Optimal Sample Allocation in Stratified Sampling
+#' @title Functions for Optimum Sample Allocation in Stratified Sampling
 #' @author Wojciech Wójciak \email{wojciech.wojciak@@gmail.com}
 #' @import checkmate
 #' @importFrom lifecycle badge
@@ -35,10 +35,10 @@
 #'
 #'   Wójciak, W. (2023).
 #'   Another Solution of Some Optimum Allocation Problem.
-#'   *Statistics in Transition new series* (in press).
+#'   *Statistics in Transition new series*, 24(5) (in press).
 #'   <https://arxiv.org/abs/2204.04035> \cr
 #'
-#'   Wójciak, W. (2019). Optimal allocation in stratified sampling schemes.
+#'   Wójciak, W. (2019). Optimal Allocation in Stratified Sampling Schemes.
 #'   *MSc Thesis*, Warsaw University of Technology, Warsaw, Poland.
 #'   <http://home.elka.pw.edu.pl/~wwojciak/msc_optimal_allocation.pdf>
 #'

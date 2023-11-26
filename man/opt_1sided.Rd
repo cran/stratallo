@@ -10,24 +10,24 @@
 \usage{
 rna(
   total_cost,
-  a,
+  A,
   bounds = NULL,
   unit_costs = 1,
   check_violations = .Primitive(">="),
   details = FALSE
 )
 
-sga(total_cost, a, M)
+sga(total_cost, A, M)
 
-sgaplus(total_cost, a, M)
+sgaplus(total_cost, A, M)
 
-coma(total_cost, a, M)
+coma(total_cost, A, M)
 }
 \arguments{
 \item{total_cost}{(\code{number})\cr total cost \eqn{c} of the survey. A strictly
 positive scalar.}
 
-\item{a}{(\code{numeric})\cr population constants \eqn{A_1,\ldots,A_H}. Strictly
+\item{A}{(\code{numeric})\cr population constants \eqn{A_1,\ldots,A_H}. Strictly
 positive numbers.}
 
 \item{bounds}{(\code{numeric} or \code{NULL}) \cr optional lower bounds
@@ -54,7 +54,7 @@ set to \code{.Primitive("<=")} or \code{.Primitive(">=")}. The first of these ch
 causes that \code{bounds} are treated as lower bounds and then \code{rna()} function
 performs the \emph{LRNA} algorithm. The latter option causes that \code{bounds}
 are treated as upper bounds, and then \code{rna()} function performs the
-\emph{RNA} algorithm.  This flag is ignored when \code{bounds} is set to \code{NULL}.}
+\emph{RNA} algorithm. This argument is ignored when \code{bounds} is set to \code{NULL}.}
 
 \item{details}{(\code{flag}) \cr should detailed information about strata
 assignments (either to take-Neyman or take-bound), values of set function
@@ -111,11 +111,11 @@ the name of the function that implements a given algorithm. See the
 description of a specific function to find out more about the corresponding
 algorithm.
 \itemize{
-\item \emph{RNA} - \code{rna()},
-\item \emph{LRNA}- \code{rna()},
-\item \emph{SGA}- \code{sga()},
-\item \emph{SGAPLUS} - \code{sgaplus()},
-\item \emph{COMA} - \code{coma()}.
+\item \emph{RNA} - \code{rna()}
+\item \emph{LRNA}- \code{rna()}
+\item \emph{SGA}- \code{sga()}
+\item \emph{SGAPLUS} - \code{sgaplus()}
+\item \emph{COMA} - \code{coma()}
 }
 
 Functions in this family should not be called directly by the user. Use
@@ -153,28 +153,28 @@ If no inequality constraints are added, the allocation is given by the
 Neyman allocation as:
 \deqn{x_h = \frac{A_h}{\sqrt{c_h}} \frac{n}{\sum_{i=1}^H A_i \sqrt{c_i}},
   \quad h = 1,\ldots,H.}
-For \emph{stratified \eqn{\pi} estimator} of the population total and for
-\emph{stratified simple random sampling without replacement} design, the
-parameters of the objective function \eqn{f} are
+For \emph{stratified \eqn{\pi} estimator} of the population total with
+\emph{stratified simple random sampling without replacement} design in use,
+the parameters of the objective function \eqn{f} are:
 \deqn{A_h = N_h S_h, \quad h = 1,\ldots,H,}
 where \eqn{N_h} is the size of stratum \eqn{h} and \eqn{S_h} denotes
 standard deviation of a given study variable in stratum \eqn{h}.
 }
 \examples{
-a <- c(3000, 4000, 5000, 2000)
+A <- c(3000, 4000, 5000, 2000)
 m <- c(50, 40, 10, 30) # lower bounds
 M <- c(100, 90, 70, 80) # upper bounds
 
-rna(total_cost = 190, a = a, bounds = M)
-rna(total_cost = 190, a = a, bounds = m, check_violations = .Primitive("<="))
-sga(total_cost = 190, a = a, M = M)
-sgaplus(total_cost = 190, a = a, M = M)
-coma(total_cost = 190, a = a, M = M)
+rna(total_cost = 190, A = A, bounds = M)
+rna(total_cost = 190, A = A, bounds = m, check_violations = .Primitive("<="))
+sga(total_cost = 190, A = A, M = M)
+sgaplus(total_cost = 190, A = A, M = M)
+coma(total_cost = 190, A = A, M = M)
 }
 \references{
 Wójciak, W. (2023).
 Another Solution of Some Optimum Allocation Problem.
-\emph{Statistics in Transition new series} (in press).
+\emph{Statistics in Transition new series}, 24(5) (in press).
 \url{https://arxiv.org/abs/2204.04035} \cr
 
 Wesołowski, J., Wieczorkowski, R., Wójciak, W. (2021).
@@ -183,7 +183,7 @@ Optimality of the Recursive Neyman Allocation.
 \doi{10.1093/jssam/smab018},
 \doi{10.48550/arXiv.2105.14486} \cr
 
-Wójciak, W. (2019). Optimal allocation in stratified sampling schemes.
+Wójciak, W. (2019). Optimal Allocation in Stratified Sampling Schemes.
 \emph{MSc Thesis}, Warsaw University of Technology, Warsaw, Poland.
 \url{http://home.elka.pw.edu.pl/~wwojciak/msc_optimal_allocation.pdf} \cr
 

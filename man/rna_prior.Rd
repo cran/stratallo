@@ -6,10 +6,10 @@
 \usage{
 rna_prior(
   total_cost,
-  a,
+  A,
   bounds = NULL,
+  check = NULL,
   check_violations = .Primitive(">="),
-  check,
   details = FALSE
 )
 }
@@ -17,7 +17,7 @@ rna_prior(
 \item{total_cost}{(\code{number})\cr total cost \eqn{c} of the survey. A strictly
 positive scalar.}
 
-\item{a}{(\code{numeric})\cr population constants \eqn{A_1,\ldots,A_H}. Strictly
+\item{A}{(\code{numeric})\cr population constants \eqn{A_1,\ldots,A_H}. Strictly
 positive numbers.}
 
 \item{bounds}{(\code{numeric} or \code{NULL}) \cr optional lower bounds
@@ -33,16 +33,16 @@ or
 is required that \code{total_cost <= sum(unit_costs * bounds)}.
 }}
 
+\item{check}{(\code{integer})\cr strata indices for which the allocation can
+possible be violated. For other strata allocation cannot be violated.}
+
 \item{check_violations}{(\code{function}) \cr 2-arguments binary operator function
 that allows the comparison of values in atomic vectors. It must either be
 set to \code{.Primitive("<=")} or \code{.Primitive(">=")}. The first of these choices
 causes that \code{bounds} are treated as lower bounds and then \code{rna()} function
 performs the \emph{LRNA} algorithm. The latter option causes that \code{bounds}
 are treated as upper bounds, and then \code{rna()} function performs the
-\emph{RNA} algorithm.  This flag is ignored when \code{bounds} is set to \code{NULL}.}
-
-\item{check}{(\code{integer})\cr strata indices for which the allocation can
-possible be violated. For other strata allocation cannot be violated.}
+\emph{RNA} algorithm. This argument is ignored when \code{bounds} is set to \code{NULL}.}
 
 \item{details}{(\code{flag}) \cr should detailed information about strata
 assignments (either to take-Neyman or take-bound), values of set function
@@ -56,5 +56,5 @@ about strata for which the allocation can possibly be violated. For all other
 strata allocation will not be violated.
 }
 \note{
-this coded does not work yet
+this coded was not extensively tested.
 }

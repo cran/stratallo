@@ -4,17 +4,17 @@
 \alias{optcost}
 \title{Minimum Cost Allocation in Stratified Sampling}
 \usage{
-optcost(V, a, a0, M = NULL, unit_costs = 1)
+optcost(V, A, A0, M = NULL, unit_costs = 1)
 }
 \arguments{
 \item{V}{(\code{number})\cr parameter \eqn{V} of the equality constraint. A
 strictly positive scalar. If \code{M} is not \code{NULL}, it is then required that
-\code{V >= sum(a^2/M) - a0}.}
+\code{V >= sum(A^2/M) - A0}.}
 
-\item{a}{(\code{numeric})\cr population constants \eqn{A_1,\ldots,A_H}. Strictly
+\item{A}{(\code{numeric})\cr population constants \eqn{A_1,\ldots,A_H}. Strictly
 positive numbers.}
 
-\item{a0}{(\code{number})\cr population constant \eqn{A_0}.}
+\item{A0}{(\code{number})\cr population constant \eqn{A_0}.}
 
 \item{M}{(\code{numeric} or \code{NULL})\cr upper bounds \eqn{M_1,\ldots,M_H},
 optionally imposed on sample sizes in strata. If no upper bounds should be
@@ -54,7 +54,7 @@ The algorithm that is used by \code{optcost()} is the \code{LRNA} and it is
 described in Wójciak (2023). The allocation computed is valid for all
 stratified sampling schemes for which the variance of the stratified
 estimator is of the form:
-\deqn{V(x_1,\ldots,x_H) = \sum_{h=1}^H \frac{A^2_h}{x_h} - A_0,}
+\deqn{\sum_{h=1}^H \frac{A^2_h}{x_h} - A_0,}
 where \eqn{H} denotes total number of strata, \eqn{x_1,\ldots,x_H} are
 strata sample sizes and \eqn{A_0,\, A_h > 0,\, h = 1,\ldots,H}, do not
 depend on \eqn{x_h,\, h = 1,\ldots,H}.
@@ -64,18 +64,20 @@ For \emph{stratified \eqn{\pi} estimator} of the population total and
 for \emph{stratified simple random sampling without replacement} design,
 the population parameters are as follows:
 \deqn{A_h = N_h S_h, \quad h = 1,\ldots,H,}
+\deqn{A_0 = \sum_{h=1}^H N_h S_h^2,}
 where \eqn{N_h} is the size of stratum \eqn{h} and \eqn{S_h} denotes
 standard deviation of a given study variable in stratum \eqn{h}.
 }
 \examples{
-a <- c(3000, 4000, 5000, 2000)
+A <- c(3000, 4000, 5000, 2000)
 M <- c(100, 90, 70, 80)
-optcost(1017579, a = a, a0 = 579, M = M)
+xopt <- optcost(1017579, A = A, A0 = 579, M = M)
+xopt
 }
 \references{
 Wójciak, W. (2023).
 Another Solution of Some Optimum Allocation Problem.
-\emph{Statistics in Transition new series} (in press).
+\emph{Statistics in Transition new series}, 24(5) (in press).
 \url{https://arxiv.org/abs/2204.04035}
 }
 \seealso{

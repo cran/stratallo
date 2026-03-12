@@ -1,103 +1,98 @@
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 
-## ----load_package-------------------------------------------------------------
+## ----load_package, echo=FALSE, message=FALSE, warning=FALSE-------------------
 library(stratallo)
+
+## ----datasets-----------------------------------------------------------------
+data(package = "stratallo")
 
 ## ----pop----------------------------------------------------------------------
 N <- c(3000, 4000, 5000, 2000) # Strata sizes.
-S <- c(48, 79, 76, 16) # Standard deviations of a study variable in strata.
+S <- c(48, 179, 176, 16) # Standard deviations of a study variable in strata.
 A <- N * S
 n <- 190 # Total sample size.
 
 ## ----opt_Neyman---------------------------------------------------------------
-xopt <- opt(n = n, A = A)
-xopt
-sum(xopt) == n
+x <- opt(n = n, A = A)
+x
+
 # Variance of the st. estimator that corresponds to the optimum allocation.
-var_st_tsi(xopt, N, S)
+var_stsi(x, N, S)
+
+# Round non-integer allocation.
+
+x_int <- round(x)
+x_int
+sum(x_int)
+
+x_int_oric <- round_oric(x)
+x_int_oric
+sum(x_int_oric)
+x_int_oric <= N
+var_stsi(x_int_oric, N, S)
 
 ## ----opt_M--------------------------------------------------------------------
-M <- c(100, 90, 70, 80) # Upper bounds imposed on the sample sizes in strata.
+M <- c(100, 90, 70, 80) # Upper bounds.
 all(M <= N)
 n <= sum(M)
 
-# Solution to Problem 1.
-xopt <- opt(n = n, A = A, M = M)
-xopt
-sum(xopt) == n
-all(xopt <= M) # Does not violate upper-bounds constraints.
-# Variance of the st. estimator that corresponds to the optimum allocation.
-var_st_tsi(xopt, N, S)
+x <- opt(n = n, A = A, M = M)
+x
 
-## ----opt_m--------------------------------------------------------------------
-m <- c(50, 120, 1, 2) # Lower bounds imposed on the sample sizes in strata.
-n >= sum(m)
-
-# Solution to Problem 2.
-xopt <- opt(n = n, A = A, m = m)
-xopt
-sum(xopt) == n
-all(xopt >= m) # Does not violate lower-bounds constraints.
 # Variance of the st. estimator that corresponds to the optimum allocation.
-var_st_tsi(xopt, N, S)
+var_stsi(x, N, S)
 
 ## ----opt_box------------------------------------------------------------------
-m <- c(100, 90, 500, 50) # Lower bounds imposed on sample sizes in strata.
-M <- c(300, 400, 800, 90) # Upper bounds imposed on sample sizes in strata.
+m <- c(100, 90, 500, 50) # Lower bounds.
+M <- c(300, 400, 800, 90) # Upper bounds.
 n <- 1284
 n >= sum(m) && n <= sum(M)
 
-# Optimum allocation under box constraints.
-xopt <- opt(n = n, A = A, m = m, M = M)
-xopt
-sum(xopt) == n
-all(xopt >= m & xopt <= M) # Does not violate any lower or upper bounds constraints.
-# Variance of the st. estimator that corresponds to the optimum allocation.
-var_st_tsi(xopt, N, S)
+x <- opt(n = n, A = A, m = m, M = M)
+x
+
+var_stsi(x, N, S)
 
 ## ----optcost------------------------------------------------------------------
 A <- c(3000, 4000, 5000, 2000)
 A0 <- 70000
-unit_costs <- c(0.5, 0.6, 0.6, 0.3) # c_h, h = 1,...4.
+unit_costs <- c(0.5, 0.6, 0.6, 0.3) # c_h, h = 1,...,4.
 M <- c(100, 90, 70, 80)
 V <- 1e6 # Variance constraint.
 V >= sum(A^2 / M) - A0
 
-xopt <- optcost(V = V, A = A, A0 = A0, M = M, unit_costs = unit_costs)
-xopt
-sum(A^2 / xopt) - A0 == V
-all(xopt <= M)
+optcost(V = V, A = A, A0 = A0, M = M, unit_costs = unit_costs)
 
-## ----rounding-----------------------------------------------------------------
-m <- c(100, 90, 500, 50)
-M <- c(300, 400, 800, 90)
-n <- 1284
+## ----dopt---------------------------------------------------------------------
+# Three domains with 2, 2, and 3 strata, respectively.
+H_counts <- c(2, 2, 3)
+N <- c(140, 110, 135, 190, 200, 40, 70)
+S <- c(180, 20, 5, 4, 35, 9, 40)
+total <- c(2, 3, 5)
+kappa <- c(0.5, 0.2, 0.3)
+n <- 828
 
-# Optimum, non-integer allocation under box constraints.
-xopt <- opt(n = n, A = A, m = m, M = M)
-xopt
+dopt(n, H_counts, N, S, total, kappa)
 
-xopt_int <- round_oric(xopt)
-xopt_int
+## ----fprec_pop----------------------------------------------------------------
+N <- 101:104 # strata sizes
+S <- 1001:1004 # standard deviations in strata
+A <- N * S
+n <- 409L # total sample size
 
-## ----finit_prec1--------------------------------------------------------------
-N <- c(3000, 4000, 5000, 2000)
-S <- c(48, 79, 76, 17)
-a <- N * S
-n <- 190
-xopt <- opt(n = n, A = A) # which after simplification is (n / sum(a)) * a
-xopt
+## ----fprec_x------------------------------------------------------------------
+x <- opt(n = n, A = A)
+x
 
-## ----finit_prec2--------------------------------------------------------------
-sum(xopt) == n
+## ----fprec_sumx---------------------------------------------------------------
+sum(x) == n
+sum((n / sum(A)) * A) == n
 
-## ----finit_prec3--------------------------------------------------------------
+## ----finit_sumx22-------------------------------------------------------------
 options(digits = 22)
-sum(xopt)
-
-sum((n / sum(A)) * A) == n # mathematically, it should be TRUE!
+sum(x)
 

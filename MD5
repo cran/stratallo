@@ -1,4 +1,4 @@
-9ad91d868781eb559687950184caa362 *DESCRIPTION
+e6eeea32a5b8d1e3b9ec690afe92b036 *DESCRIPTION
 81ee02235c79162237a12b7946f1ef58 *NAMESPACE
 23a76346722896cea65006feb7828f54 *NEWS.md
 c7cc7b829f3d51b3c34a738dc324d0fc *R/alg_dca.R
@@ -17,7 +17,7 @@ f2231b031e54cc3d00874641c43337de *R/opt.R
 bd189836340b7b05f553955b152d8793 *R/utils.R
 f6ffc9e1bb3a826f3c46d37923bd6b6a *R/var.R
 15f8d88c8d6621403216aeb02efec7fd *README.md
-99da896d4d975398368aae05ac365e81 *build/partial.rdb
+59e4e8359220e1932025717a92ac1c60 *build/partial.rdb
 26f9ca14236205975766cca4576e6b63 *build/vignette.rds
 75699eddf8a2f5120d8e52cad059ab25 *data/pop10s_bounds_ucost.rda
 13469d5e02e32f53f9020c7462f03d40 *data/pop2d4s.rda
@@ -28,7 +28,7 @@ f30d1dae271530ad3f8e09b0db2b771a *inst/REFERENCES.bib
 08c05c6ea4de2147805ca9d6f5ed313d *inst/WORDLIST
 80858dc845531553d8756081ac68ff82 *inst/doc/stratallo.R
 0c26004ea0d6c8c15449b580be8b7d67 *inst/doc/stratallo.Rmd
-72c1231e1c594c5c6e7abfcfb8579e13 *inst/doc/stratallo.html
+3da9f59f2f17e3c09096f12272afbdf0 *inst/doc/stratallo.html
 29ec7c1e59191dde3815e4e61b0dc099 *man/alg_1sided.Rd
 097da4452390d591603fdbdd3b466e40 *man/alloc_summary.Rd
 b21b5dbd97d4e7c085ae8c546b907171 *man/check_rdca.Rd
@@ -73,17 +73,17 @@ b71ee26c61b5fa8684fc4bd0839fe205 *tests/testthat/_snaps/alg_sga.md
 fe233bef815ddd63c219b2a2c7ad4fb4 *tests/testthat/helper-data.R
 b6b600900b0c89ba3ef3e07f7f52d799 *tests/testthat/helper-funs.R
 e38afde4710682ccaa4f208649cb4bde *tests/testthat/test-alg_coma.R
-9ae6fec97167d1a3f758e4c2e7f2e812 *tests/testthat/test-alg_dca.R
+af41b5bff51d491ac9e5e18ee87828f1 *tests/testthat/test-alg_dca.R
 1000a36749f96639fedc45df7b106eaa *tests/testthat/test-alg_dca0.R
-51f0145b47ddfa08edac39d25dfe70d6 *tests/testthat/test-alg_rdca.R
-182958a2eeb71c4e6b9362c86980dad7 *tests/testthat/test-alg_rna.R
+22838cfa8ac24cd7e684634db6d0978b *tests/testthat/test-alg_rdca.R
+c61c1da621e1440e279af68f05f84ba5 *tests/testthat/test-alg_rna.R
 8711704fa919e4d001481fad851aa25e *tests/testthat/test-alg_rna_rec.R
-886b69fac6cc52e6e92f58bf5f65e971 *tests/testthat/test-alg_rnabox.R
+b46d08740088b32c1943821520e9ac09 *tests/testthat/test-alg_rnabox.R
 42a80b1ecddeac8be793e727a21935a2 *tests/testthat/test-alg_sga.R
 cf7c1d5e93d08980f75ef4fffd154d44 *tests/testthat/test-alg_sgaplus.R
 29c2e95b2c6195b1ef653f6bfcc513f0 *tests/testthat/test-alloc_summary.R
 1f2e95a8eb51f12156899004da0c4bf5 *tests/testthat/test-check_rdca.R
-8c79cf4bb2612cde78ee1701d1b9cafb *tests/testthat/test-dopt.R
+98f75bb8a56db83849d8a85a371cc717 *tests/testthat/test-dopt.R
 184d65604427a0224b14af97357ffb88 *tests/testthat/test-helpers_dca_rdca.R
 95a633859d2d2c945998435dada609e8 *tests/testthat/test-opt.R
 10653d2e01ff0315443a0c517d91ef94 *tests/testthat/test-optcost.R
